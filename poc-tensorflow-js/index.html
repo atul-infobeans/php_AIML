@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.8.4/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.5.1/dist/tfjs-vis.umd.min.js"></script>
+<body>
+<h2>TensorFlow JavaScript</h2>
+<h3>Plotting Data</h3>
+<div id="plot1"></div>
+
+<script>
+// Extract Data Function 
+function extractData(obj) {
+  return {x:obj.AvgAreaNumberofRooms, y:obj.Price};
+}
+// Remove Errors Function 
+function removeErrors(obj) {
+  return obj.x != null && obj.y != null;
+}
+
+// Plot Data Function
+function tfPlot(values, surface) {
+  tfvis.render.scatterplot(surface,
+    {values:values, series:['Original', 'Predicted']},
+    {xLabel:'Rooms', yLabel:'Price',});
+}
+
+// Main Function
+async function runTF() {
+const jsonData = await fetch("houses.json");
+let values = await jsonData.json();
+values = values.map(extractData).filter(removeErrors);
+const surface1 = document.getElementById("plot1");
+tfPlot(values, surface1);
+}
+// End Main Function
+
+runTF();
+</script>
+
+</body>
+</html>
